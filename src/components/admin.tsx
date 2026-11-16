@@ -50,7 +50,7 @@ export function AdminLogin({ configured }: { configured: boolean }) {
   }
   return <section className="auth-card">
     <div className="auth-icon"><ShieldCheck size={23} /></div><h1>Admin sign in</h1><p>Private access for Rent Rooms Dehradun.</p>
-    {!configured && <div className="setup-warning"><b>Setup required</b><br />Add DATABASE_URL, RENTROOMS_ADMIN_EMAIL, RENTROOMS_ADMIN_PASSWORD, and a 32+ character RENTROOMS_SESSION_SECRET to `.env.local` and your Vercel project settings.</div>}
+    {!configured && <div className="setup-warning"><b>Setup required</b><br />Add the Supabase Postgres connection string as DATABASE_URL, RENTROOMS_ADMIN_EMAIL, RENTROOMS_ADMIN_PASSWORD, and a 32+ character RENTROOMS_SESSION_SECRET to `.env.local` and your Vercel project settings. Apply the schema with `supabase db push`.</div>}
     <form className="form-stack" onSubmit={submit}>
       <label>Admin email<input type="email" name="email" autoComplete="username" required /></label>
       <label>Password<input type="password" name="password" autoComplete="current-password" required /></label>

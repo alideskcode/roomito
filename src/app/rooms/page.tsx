@@ -20,7 +20,7 @@ export default async function RoomsPage({ searchParams }: { searchParams: Promis
   const sort = typeof params.sort === "string" ? params.sort : "newest";
   let areas = PINNED_AREAS.map((name) => ({ name, count: 0 }));
   let rooms: PublicRoom[] = [];
-  let loadError = process.env.DATABASE_URL ? "" : "Room listings will be available when the Neon database is connected.";
+  let loadError = process.env.DATABASE_URL ? "" : "Room listings will be available when the Supabase database is connected.";
   if (process.env.DATABASE_URL) {
     try {
       const [loadedAreas, loadedRooms] = await Promise.all([

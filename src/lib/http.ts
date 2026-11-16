@@ -8,7 +8,7 @@ export function errorResponse(message: string, status = 400) {
 export function requireDatabase() {
   return process.env.DATABASE_URL
     ? null
-    : errorResponse("This action requires DATABASE_URL. Configure the Neon database before continuing.", 503);
+    : errorResponse("This action requires the Supabase Postgres connection string in DATABASE_URL.", 503);
 }
 
 export async function requireAdmin() {

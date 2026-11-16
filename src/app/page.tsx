@@ -10,7 +10,7 @@ export const dynamic = "force-dynamic";
 export default async function HomePage() {
   let areas = PINNED_AREAS.map((name) => ({ name, count: 0 }));
   let rooms: PublicRoom[] = [];
-  let dataMessage = process.env.DATABASE_URL ? "" : "Room listings will appear here once the Neon database is connected.";
+  let dataMessage = process.env.DATABASE_URL ? "" : "Room listings will appear here once the Supabase database is connected.";
   if (process.env.DATABASE_URL) {
     try {
       const [loadedAreas, loadedRooms] = await Promise.all([getAreas(), listPublicRooms()]);

@@ -16,7 +16,7 @@ export async function Header() {
     <header className="site-header">
       <div className="container header-inner">
         <Link href="/" className="brand">
-          <Image className="brand-logo" src="/r.png" alt="Roomito" width={256} height={141} priority />
+          <Image className="brand-logo" src="/roomito-logo.png" alt="Roomito" width={658} height={359} priority />
         </Link>
         <HeaderNav userName={user?.name ?? null} isAdmin={admin} />
       </div>

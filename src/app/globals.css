@@ -33,6 +33,7 @@ h1 em, h2 em { color: var(--blue); font-family: Georgia, "Times New Roman", seri
 .brand { display: inline-flex; align-items: center; gap: 10px; white-space: nowrap; font-size: 15px; font-weight: 600; letter-spacing: -.03em; }
 .brand b { font-weight: 800; }
 .brand-mark { width: 34px; height: 34px; border-radius: 12px; display: grid; place-items: center; color: white; font-weight: 800; font-size: 17px; background: var(--blue); box-shadow: 0 5px 12px #1456a02e; }
+.brand-logo { display: block; width: 96px; height: auto; }
 .main-nav { display: flex; align-items: center; gap: 28px; color: #44546b; font-size: 13px; font-weight: 600; }
 .main-nav a:hover, .footer-links a:hover { color: var(--blue); }
 .main-nav .nav-owner { display: inline-flex; align-items: center; gap: 7px; color: var(--blue); }
@@ -140,6 +141,7 @@ h1 em, h2 em { color: var(--blue); font-family: Georgia, "Times New Roman", seri
 .footer-main { display: grid; grid-template-columns: 1.25fr 1fr 1fr; gap: 38px; padding-bottom: 30px; }
 .footer-brand { color: white; }
 .footer-brand .brand-mark { color: var(--blue); background: white; }
+.footer-brand .brand-logo { filter: brightness(0) invert(1); }
 .footer-main > div:first-child p { margin: 12px 0 0; color: #9bacc2; font-size: 12px; }
 .footer-links, .footer-contact { display: grid; align-content: start; gap: 10px; color: #bbc8d8; font-size: 12px; }
 .footer-contact a { display: flex; align-items: center; gap: 9px; }
@@ -350,6 +352,7 @@ h1 em, h2 em { color: var(--blue); font-family: Georgia, "Times New Roman", seri
   .header-inner { min-height: 65px; }
   .brand { font-size: 13px; }
   .brand-mark { width: 31px; height: 31px; border-radius: 10px; }
+  .brand-logo { width: 82px; }
   .menu-toggle { display: block; }
   .main-nav { position: absolute; display: none; top: 64px; left: 0; right: 0; align-items: stretch; gap: 0; padding: 8px 16px 15px; border-bottom: 1px solid var(--line); background: white; box-shadow: 0 14px 20px #10233d0b; }
   .main-nav.is-open { display: grid; }

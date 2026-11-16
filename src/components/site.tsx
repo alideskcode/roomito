@@ -13,7 +13,7 @@ export function Footer() {
     <footer className="site-footer">
       <div className="container footer-main">
         <div>
-          <Link href="/" className="brand footer-brand"><span className="brand-mark">R</span><span>Rent Rooms <b>Dehradun</b></span></Link>
+          <Link href="/" className="brand footer-brand"><Image className="brand-logo" src="/roomito-logo.png" alt="Roomito" width={256} height={141} /></Link>
           <p>Room finding, made a little easier.</p>
         </div>
         <div className="footer-links">

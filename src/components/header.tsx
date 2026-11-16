@@ -1,3 +1,4 @@
+import Image from "next/image";
 import Link from "next/link";
 import { HeaderNav } from "@/components/header-nav";
 import { currentUser, isAdmin } from "@/lib/security";
@@ -15,8 +16,7 @@ export async function Header() {
     <header className="site-header">
       <div className="container header-inner">
         <Link href="/" className="brand">
-          <span className="brand-mark">R</span>
-          <span>Rent Rooms <b>Dehradun</b></span>
+          <Image className="brand-logo" src="/r.png" alt="Roomito" width={256} height={141} priority />
         </Link>
         <HeaderNav userName={user?.name ?? null} isAdmin={admin} />
       </div>

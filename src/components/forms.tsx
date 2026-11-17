@@ -160,6 +160,7 @@ export function ResetPasswordForm({ token }: { token: string }) {
   const { notice, busy, submit } = useSubmit("/api/auth/reset-password", "/login");
   return <form className="form-stack" onSubmit={submit}>
     <input type="hidden" name="token" value={token} />
+    <input className="honeypot" name="website" tabIndex={-1} autoComplete="off" aria-hidden="true" />
     <label>New password<input name="password" type="password" minLength={10} maxLength={72} required autoComplete="new-password" /><small>Use 10–72 characters.</small></label>
     <button className="button button-orange button-full" disabled={busy}>{busy ? "Updating…" : "Reset password"} <ArrowRight size={17} /></button>
     <SubmitMessage notice={notice} />

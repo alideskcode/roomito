@@ -6,20 +6,20 @@ import {
   createAdminSession,
   createUserSession,
   validAdminCredentials,
-  verifyPassword,
   authConfigurationReady,
+  verifyPassword,
 } from "@/lib/security";
 import { errorResponse, requireDatabase } from "@/lib/http";
-import { passwordValue, text } from "@/lib/validation";
+import { digits, passwordValue, text, validEmail } from "@/lib/validation";
 
 export const runtime = "nodejs";
 
 export async function POST(request: Request) {
   const form = await request.formData();
   if (text(form.get("website"), 200)) return NextResponse.json({ ok: true });
-  const identifier = text(form.get("identifier"), 254);
+  const identifier = text(form.get("identifier"), 254).toLowerCase();
   const password = passwordValue(form.get("password"));
-  if (!identifier || !password) return errorResponse("Enter your email or 10-digit mobile and password.");
+  if (!identifier || !password) return errorResponse("Enter your email and password.");
 
   const adminEmail = process.env.RENTROOMS_ADMIN_EMAIL;
   if (adminEmail && identifier.toLowerCase() === adminEmail.toLowerCase()) {
@@ -39,6 +39,7 @@ export async function POST(request: Request) {
 
   const unavailable = requireDatabase();
   if (unavailable) return unavailable;
+  if (!validEmail(identifier) && !digits(identifier)) return errorResponse("Enter a valid email or 10-digit mobile number.");
   if (!(await checkIdentityRateLimit("user-login", identifier, 8))) {
     return errorResponse("Too many attempts. Please try again in 15 minutes.", 429);
   }
@@ -46,15 +47,15 @@ export async function POST(request: Request) {
 
   const result = await query<{ id: string; password_hash: string; is_blocked: boolean }>(
     `SELECT id, password_hash, is_blocked FROM users
-     WHERE email = LOWER($1) OR mobile = $1 LIMIT 1`,
+     WHERE LOWER(email) = LOWER($1) OR mobile = $1 LIMIT 1`,
     [identifier],
   );
   const user = result.rows[0];
-  if (!user || !(await verifyPassword(password, user.password_hash))) {
-    return errorResponse("The email/mobile or password doesn't match.", 401);
+  if (!user || !(await verifyPassword(password, user.password_hash))) return errorResponse("The email/mobile or password doesn't match.", 401);
+  if (user.is_blocked) {
+    return errorResponse("This account is currently blocked. Please contact the broker.", 403);
   }
   await clearIdentityRateLimit("user-login", identifier);
-  if (user.is_blocked) return errorResponse("This account is currently blocked. Please contact the broker.", 403);
   await createUserSession(user.id);
   return NextResponse.json({ ok: true, redirectTo: "/dashboard" });
 }

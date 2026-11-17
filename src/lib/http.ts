@@ -11,6 +11,14 @@ export function requireDatabase() {
     : errorResponse("This action requires the Supabase Postgres connection string in DATABASE_URL.", 503);
 }
 
+export function publicOrigin(request: Request): string {
+  const requestUrl = new URL(request.url);
+  if (["localhost", "127.0.0.1", "::1"].includes(requestUrl.hostname)) return requestUrl.origin;
+  return process.env.NEXT_PUBLIC_SITE_URL
+    ? new URL(process.env.NEXT_PUBLIC_SITE_URL).origin
+    : requestUrl.origin;
+}
+
 export async function requireAdmin() {
   const unavailable = requireDatabase();
   if (unavailable) return unavailable;

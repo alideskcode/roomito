@@ -32,14 +32,15 @@ export async function POST(request: Request) {
     return errorResponse("Too many signup attempts. Please try again in 15 minutes.", 429);
   }
 
-  const passwordHash = await hashPassword(password);
   try {
     const result = await query<{ id: string }>(
       `INSERT INTO users (name, mobile, email, password_hash, role)
        VALUES ($1, $2, $3, $4, $5) RETURNING id`,
-      [name, mobile, email, passwordHash, role],
+      [name, mobile, email, await hashPassword(password), role],
     );
-    await createUserSession(result.rows[0].id);
+    const userId = result.rows[0]?.id;
+    if (!userId) throw new Error("Roomito signup returned no user id.");
+    await createUserSession(userId);
     await clearIdentityRateLimit("signup", `${email}:${mobile}`);
     return NextResponse.json({ ok: true, redirectTo: "/dashboard" });
   } catch (error) {

@@ -2,7 +2,6 @@
 
 import { useState, type FormEvent } from "react";
 import { useRouter } from "next/navigation";
-import { createClient } from "@/lib/supabase/client";
 
 function GoogleMark() {
   return (
@@ -16,40 +15,13 @@ function GoogleMark() {
 }
 
 export function GoogleSignInButton({ errorMessage }: { errorMessage?: string }) {
-  const [busy, setBusy] = useState(false);
-  const [error, setError] = useState(errorMessage || "");
-
-  async function signIn() {
-    if (busy) return;
-    setBusy(true);
-    setError("");
-
-    try {
-      const supabase = createClient();
-      const redirectTo = new URL("/auth/callback?next=%2Fdashboard", window.location.origin).toString();
-      const { error: authError } = await supabase.auth.signInWithOAuth({
-        provider: "google",
-        options: { redirectTo },
-      });
-      if (authError) {
-        console.error("Google login error:", authError.message);
-        setError("Google sign-in couldn't start. Please try again.");
-        setBusy(false);
-      }
-    } catch (issue) {
-      console.error("Google login error:", issue);
-      setError(issue instanceof Error ? issue.message : "Google sign-in couldn't start. Please try again.");
-      setBusy(false);
-    }
-  }
-
   return (
     <>
-      <button className="google-signin-button" type="button" onClick={() => void signIn()} disabled={busy}>
+      <a className="google-signin-button" href="/api/auth/google">
         <GoogleMark />
-        {busy ? "Connecting to Google…" : "Sign in with Google"}
-      </button>
-      {error && <p className="form-error" role="alert">{error}</p>}
+        Sign in with Google
+      </a>
+      {errorMessage && <p className="form-error" role="alert">{errorMessage}</p>}
     </>
   );
 }

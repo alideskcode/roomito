@@ -11,10 +11,11 @@ A mobile-first Next.js room-brokering website with public listings, renter and o
 
    ```dotenv
    DATABASE_URL=                 # Supabase Postgres connection string
-   NEXT_PUBLIC_SUPABASE_URL=     # Supabase project URL
-   NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY=  # Supabase publishable key
    BLOB_READ_WRITE_TOKEN=        # Vercel Blob read/write token
    NEXT_PUBLIC_SITE_URL=         # Public URL, for example https://your-domain.example
+   GOOGLE_CLIENT_ID=             # Google Cloud OAuth web client ID
+   GOOGLE_CLIENT_SECRET=         # Google Cloud OAuth web client secret (server only)
+   GOOGLE_REDIRECT_URI=          # http://localhost:3000/api/auth/google/callback locally
    RENTROOMS_ADMIN_EMAIL=        # Admin login email
    RENTROOMS_ADMIN_PASSWORD=     # Strong, unique admin password
    RENTROOMS_SESSION_SECRET=     # Random secret of at least 32 characters
@@ -44,28 +45,29 @@ A mobile-first Next.js room-brokering website with public listings, renter and o
    npm run dev
    ```
 
-The public pages render without database configuration. Account, room, and admin features require the Supabase Postgres connection string and the migration above. The app does not create database tables at runtime. The migration creates a new, empty application schema; it does not transfer existing users, room listings, requests, or saved rooms from another database.
+The public pages render without database configuration. Account, room, and admin features require the Supabase Postgres connection string and migrations above. The app does not create database tables at runtime. The initial migration creates a new, empty application schema; it does not transfer existing users, room listings, requests, or saved rooms from another database.
 
 ## Deploy to Vercel
 
-1. Add all ten environment variables above to the Vercel project settings for Production (and Preview if desired). Set `DATABASE_URL` to the Supabase transaction-pooler connection string for serverless deployments.
+1. Add the environment variables above to the Vercel project settings for Production (and Preview if desired). Set `DATABASE_URL` to the Supabase transaction-pooler connection string for serverless deployments. Store `GOOGLE_CLIENT_SECRET` as a server-side environment variable, never a `NEXT_PUBLIC_` variable.
 2. Set `NEXT_PUBLIC_SITE_URL` to the canonical HTTPS deployment URL.
 3. Import this project into Vercel and deploy.
 4. Open `/admin/login` and sign in with the configured admin email and password.
 
-Password reset links are delivered through Resend; configure a verified sender address before enabling that flow.
+Email/password authentication is handled by Roomito using bcrypt password hashes in the private application database. Password reset links are delivered through Resend; configure a verified sender before using that flow.
 
-### Google sign-in setup
+### Authentication setup
 
-1. In Supabase, enable **Authentication → Sign In / Providers → Google** and add the Google OAuth client ID and secret.
-2. In Google Cloud, enable the OpenID `openid` scope, add `https://roomito.in` as an authorized JavaScript origin, and add this authorized redirect URI:
+1. In Google Cloud, create an OAuth 2.0 **Web application** client. Set its authorized redirect URIs to:
 
    ```text
-   https://zpgwytdbxvxfockjnsgn.supabase.co/auth/v1/callback
+   https://roomito.in/api/auth/google/callback
+   http://localhost:3000/api/auth/google/callback
    ```
 
-3. In Supabase **Authentication → URL Configuration**, set the Site URL to `https://roomito.in` and add `https://roomito.in/auth/callback` to the redirect URL allow list. Add your local development callback (`http://localhost:3000/auth/callback`) if needed.
-4. Apply the database migration with `supabase db push` before deploying. Google accounts matching an existing Roomito email are linked; new accounts are created as renters after the user provides a 10-digit mobile number.
+   Set `GOOGLE_CLIENT_ID`, `GOOGLE_CLIENT_SECRET`, and `GOOGLE_REDIRECT_URI` in `.env.local` and Vercel. Use the production URI for `GOOGLE_REDIRECT_URI` on Vercel and the localhost URI locally. Google authentication is handled directly by Roomito; Supabase Auth is not used.
+
+2. Apply pending database migrations with `supabase db push` before deploying. Google accounts are linked to Roomito accounts by Google's verified email; new Google users provide a 10-digit mobile number.
 
 ## Important behavior
 
@@ -74,7 +76,7 @@ Password reset links are delivered through Resend; configure a verified sender a
 - Photos are stored privately in Vercel Blob and served through an access-checked image route. Approved/booked listing photos are public through the app; pending/cancelled photos require admin access.
 - Room images are converted to WebP, resized to at most 1200 px and compressed below 300,000 bytes before upload.
 - To add photos to an already-approved room, open the admin dashboard's Rooms tab and use Add room photos. Existing submissions are not uploaded automatically when Blob is configured later.
-- Sign-in cookies are HTTP-only; user passwords use bcrypt hashes; admin/user authentication and form endpoints are rate-limited.
+- Email/password accounts use bcrypt hashes stored in the private Roomito database. Roomito uses HTTP-only app sessions for room, request, and dashboard access; Google OAuth is verified server-side and linked by verified email.
 - Brokerage is 50% of one month's rent. Public broker contact: +91 98372 74296 and @rentroomsdehradun.
 
 ## Checks

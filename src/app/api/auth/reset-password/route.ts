@@ -5,10 +5,13 @@ import { hashPassword } from "@/lib/security";
 import { errorResponse, requireDatabase } from "@/lib/http";
 import { passwordValue, text, validPassword } from "@/lib/validation";
 
+export const runtime = "nodejs";
+
 export async function POST(request: Request) {
   const unavailable = requireDatabase();
   if (unavailable) return unavailable;
   const form = await request.formData();
+  if (text(form.get("website"), 200)) return NextResponse.json({ ok: true });
   const token = text(form.get("token"), 100);
   const password = passwordValue(form.get("password"));
   if (!token || !validPassword(password)) return errorResponse("Use a valid reset link and a password of 10–72 characters.");
@@ -19,6 +22,7 @@ export async function POST(request: Request) {
   );
   const reset = result.rows[0];
   if (!reset) return errorResponse("This reset link has expired or was already used. Request a new one.", 400);
+
   try {
     await transaction(async (client) => {
       const consumed = await client.query(
@@ -36,5 +40,5 @@ export async function POST(request: Request) {
     console.error("Password reset failed:", error);
     return errorResponse("We couldn't reset your password. Please try again.", 500);
   }
-  return NextResponse.json({ ok: true });
+  return NextResponse.json({ ok: true, message: "Your password was reset. Please log in with your new password.", redirectTo: "/login" });
 }

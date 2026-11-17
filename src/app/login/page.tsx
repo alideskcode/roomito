@@ -16,7 +16,7 @@ export default async function LoginPage({ searchParams }: PageProps<"/login">) {
       ? "Google sign-in couldn't be completed. Please try again."
       : undefined;
   const ready = Boolean(process.env.RENTROOMS_SESSION_SECRET && process.env.RENTROOMS_SESSION_SECRET.length >= 32);
-  const supabaseReady = Boolean(process.env.NEXT_PUBLIC_SUPABASE_URL && process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY);
+  const googleReady = Boolean(process.env.GOOGLE_CLIENT_ID && process.env.GOOGLE_CLIENT_SECRET && process.env.GOOGLE_REDIRECT_URI);
 
   return (
     <main className="auth-section">
@@ -25,7 +25,7 @@ export default async function LoginPage({ searchParams }: PageProps<"/login">) {
         <h1>Welcome back</h1>
         <p>Log in to save rooms and manage your requests.</p>
         {!ready && <div className="setup-warning"><b>Setup required</b><br />Add a 32+ character RENTROOMS_SESSION_SECRET to `.env.local` and your Vercel project settings before signing in.</div>}
-        {!supabaseReady && <div className="setup-warning"><b>Google sign-in setup required</b><br />Set NEXT_PUBLIC_SUPABASE_URL and NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY in your environment.</div>}
+        {!googleReady && <div className="setup-warning"><b>Google sign-in setup required</b><br />Set GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET, and GOOGLE_REDIRECT_URI in your environment.</div>}
         <GoogleSignInButton errorMessage={googleError} />
         <div className="auth-divider"><span>or continue with email</span></div>
         <LoginForm />

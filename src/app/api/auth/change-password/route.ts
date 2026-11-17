@@ -18,5 +18,5 @@ export async function POST(request: Request) {
     return errorResponse("Your current password is incorrect.", 401);
   }
   await query("UPDATE users SET password_hash = $1 WHERE id = $2", [await hashPassword(newPassword), user.id]);
-  return NextResponse.json({ ok: true });
+  return NextResponse.json({ ok: true, message: "Password updated successfully." });
 }

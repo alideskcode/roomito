@@ -40,7 +40,7 @@ export function HeaderNav({ userName, isAdmin }: Props) {
         <Link href="/owner" className="nav-owner" onClick={() => setOpen(false)}>List your room <ArrowRight size={15} /></Link>
         {userName || isAdmin ? (
           <div className="nav-account">
-            <span className="nav-user-name">{userName || "Admin"}</span>
+            <span className="nav-user-name" title={userName || "Admin"}>{userName ? `Hi, ${userName}` : "Admin"}</span>
             <Link className="nav-login" href={isAdmin && !userName ? "/admin" : "/dashboard"} onClick={() => setOpen(false)}>Dashboard</Link>
             <button type="button" className="nav-logout" onClick={() => void logout()}><LogOut size={14} /> Log out</button>
           </div>

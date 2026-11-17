@@ -166,7 +166,7 @@ export function ResetPasswordForm({ token }: { token: string }) {
   </form>;
 }
 
-export function OwnerForm({ user }: { user: CurrentUser | null }) {
+export function OwnerForm({ user }: { user: CurrentUser }) {
   const [previews, setPreviews] = useState<string[]>([]);
   const [buildingPreview, setBuildingPreview] = useState("");
   const [whatsapp, setWhatsapp] = useState("");
@@ -178,10 +178,9 @@ export function OwnerForm({ user }: { user: CurrentUser | null }) {
   }
 
   return <form className="form-stack" onSubmit={onSubmit}>
-    {!user && <p className="form-tip">You can submit without an account. <Link href="/login">Log in</Link> to prefill your details and track this listing.</p>}
     <div className="form-grid two">
-      <label>Owner name<input name="name" defaultValue={user?.name || ""} required maxLength={100} /></label>
-      <label>Mobile number<input name="mobile" type="tel" inputMode="numeric" pattern="[0-9]{10}" maxLength={10} defaultValue={user?.mobile || ""} required /></label>
+      <label>Owner name<input name="name" defaultValue={user.name} required maxLength={100} /></label>
+      <label>Mobile number<input name="mobile" type="tel" inputMode="numeric" pattern="[0-9]{10}" maxLength={10} defaultValue={user.mobile} required /></label>
     </div>
     <div className="form-grid two">
       <label>Area<input name="area" placeholder="Type your area" required maxLength={100} /></label>

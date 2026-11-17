@@ -69,6 +69,7 @@ Password reset links are delivered through Resend; configure a verified sender a
 
 ## Important behavior
 
+- Only signed-in users can submit room listings. Signed-out visitors are prompted to log in or create an account, and the listing API also requires a valid session.
 - Public listing queries return only approved/booked room fields; owner names, owner mobile numbers and exact addresses remain admin-only.
 - Photos are stored privately in Vercel Blob and served through an access-checked image route. Approved/booked listing photos are public through the app; pending/cancelled photos require admin access.
 - Room images are converted to WebP, resized to at most 1200 px and compressed below 300,000 bytes before upload.

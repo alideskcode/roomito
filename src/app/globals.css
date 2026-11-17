@@ -39,7 +39,7 @@ h1 em, h2 em { color: var(--blue); font-family: Georgia, "Times New Roman", seri
 .main-nav .nav-owner { display: inline-flex; align-items: center; gap: 7px; color: var(--blue); }
 .main-nav .nav-login { padding: 10px 16px; border: 1px solid var(--line); border-radius: 10px; color: var(--ink); }
 .nav-account { display: flex; align-items: center; gap: 12px; }
-.nav-user-name { max-width: 150px; overflow: hidden; color: var(--ink); font-size: 12px; text-overflow: ellipsis; white-space: nowrap; }
+.nav-user-name { max-width: 190px; overflow: hidden; color: var(--ink); font-size: 12px; text-overflow: ellipsis; white-space: nowrap; }
 .main-nav .nav-logout { display: inline-flex; align-items: center; gap: 5px; padding: 8px 0; border: 0; color: #64748b; background: transparent; font-size: 12px; font-weight: 700; }
 .main-nav .nav-logout:hover { color: #b4232a; }
 .menu-toggle { display: none; border: 0; background: transparent; color: var(--ink); padding: 8px; }

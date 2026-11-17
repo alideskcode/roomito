@@ -9,13 +9,15 @@ import { FACILITIES } from "@/lib/constants";
 export const runtime = "nodejs";
 
 export async function POST(request: Request) {
+  const user = await currentUser();
+  if (!user) return errorResponse("Please sign in before listing a room.", 401);
+
   const unavailable = requireDatabase();
   if (unavailable) return unavailable;
   if (!(await checkRateLimit("owner-submission", 4))) return errorResponse("Too many submissions. Please try again later.", 429);
   const form = await request.formData();
   if (text(form.get("website"), 200)) return NextResponse.json({ ok: true });
 
-  const user = await currentUser();
   const name = text(form.get("name"), 100);
   const mobile = text(form.get("mobile"), 10);
   const area = titleCaseArea(text(form.get("area"), 100));
@@ -38,7 +40,7 @@ export async function POST(request: Request) {
     `INSERT INTO owner_submissions
       (owner_name, mobile, area, address, rent, security_deposit, room_type, audience, facilities, distance_geu, submitted_by, consent)
      VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, TRUE) RETURNING id`,
-    [name, mobile, area, address, rent, deposit, roomType, audience, facilities, distance, user?.id ?? null],
+    [name, mobile, area, address, rent, deposit, roomType, audience, facilities, distance, user.id],
   );
   const submissionId = result.rows[0].id;
   const receivedFiles = [

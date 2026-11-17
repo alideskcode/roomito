@@ -166,6 +166,7 @@ h1 em, h2 em { color: var(--blue); font-family: Georgia, "Times New Roman", seri
 .content-card .step-number { color: var(--orange); font-size: 12px; font-weight: 800; letter-spacing: .1em; }
 .content-card h2, .content-card h3 { margin: 9px 0 6px; font-size: 17px; }
 .content-card p { margin: 0; color: var(--muted); font-size: 12px; }
+.founder-card p { font-size: 14px; }
 .faq-item { padding: 19px 0; border-bottom: 1px solid var(--line); }
 .faq-item h2 { margin: 0 0 6px; font-size: 17px; }
 .faq-item p { margin: 0; color: var(--muted); font-size: 13px; }

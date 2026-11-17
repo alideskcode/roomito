@@ -11,6 +11,8 @@ A mobile-first Next.js room-brokering website with public listings, renter and o
 
    ```dotenv
    DATABASE_URL=                 # Supabase Postgres connection string
+   NEXT_PUBLIC_SUPABASE_URL=     # Supabase project URL
+   NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY=  # Supabase publishable key
    BLOB_READ_WRITE_TOKEN=        # Vercel Blob read/write token
    NEXT_PUBLIC_SITE_URL=         # Public URL, for example https://your-domain.example
    RENTROOMS_ADMIN_EMAIL=        # Admin login email
@@ -46,12 +48,24 @@ The public pages render without database configuration. Account, room, and admin
 
 ## Deploy to Vercel
 
-1. Add all eight environment variables above to the Vercel project settings for Production (and Preview if desired). Set `DATABASE_URL` to the Supabase transaction-pooler connection string for serverless deployments.
+1. Add all ten environment variables above to the Vercel project settings for Production (and Preview if desired). Set `DATABASE_URL` to the Supabase transaction-pooler connection string for serverless deployments.
 2. Set `NEXT_PUBLIC_SITE_URL` to the canonical HTTPS deployment URL.
 3. Import this project into Vercel and deploy.
 4. Open `/admin/login` and sign in with the configured admin email and password.
 
 Password reset links are delivered through Resend; configure a verified sender address before enabling that flow.
+
+### Google sign-in setup
+
+1. In Supabase, enable **Authentication → Sign In / Providers → Google** and add the Google OAuth client ID and secret.
+2. In Google Cloud, enable the OpenID `openid` scope, add `https://roomito.in` as an authorized JavaScript origin, and add this authorized redirect URI:
+
+   ```text
+   https://zpgwytdbxvxfockjnsgn.supabase.co/auth/v1/callback
+   ```
+
+3. In Supabase **Authentication → URL Configuration**, set the Site URL to `https://roomito.in` and add `https://roomito.in/auth/callback` to the redirect URL allow list. Add your local development callback (`http://localhost:3000/auth/callback`) if needed.
+4. Apply the database migration with `supabase db push` before deploying. Google accounts matching an existing Roomito email are linked; new accounts are created as renters after the user provides a 10-digit mobile number.
 
 ## Important behavior
 

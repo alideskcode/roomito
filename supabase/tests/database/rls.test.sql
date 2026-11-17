@@ -3,7 +3,7 @@ BEGIN;
 CREATE EXTENSION IF NOT EXISTS pgtap WITH SCHEMA extensions;
 SET LOCAL search_path = extensions, public;
 
-SELECT plan(27);
+SELECT plan(30);
 
 SELECT ok((SELECT relrowsecurity FROM pg_class WHERE oid = 'public.users'::regclass), 'users has RLS enabled');
 SELECT ok(NOT has_table_privilege('anon', 'public.users', 'SELECT') AND NOT has_table_privilege('anon', 'public.users', 'INSERT') AND NOT has_table_privilege('anon', 'public.users', 'UPDATE') AND NOT has_table_privilege('anon', 'public.users', 'DELETE'), 'anon cannot access users');
@@ -40,6 +40,10 @@ SELECT ok(NOT has_table_privilege('authenticated', 'public.user_sessions', 'SELE
 SELECT ok((SELECT relrowsecurity FROM pg_class WHERE oid = 'public.password_resets'::regclass), 'password_resets has RLS enabled');
 SELECT ok(NOT has_table_privilege('anon', 'public.password_resets', 'SELECT') AND NOT has_table_privilege('anon', 'public.password_resets', 'INSERT') AND NOT has_table_privilege('anon', 'public.password_resets', 'UPDATE') AND NOT has_table_privilege('anon', 'public.password_resets', 'DELETE'), 'anon cannot access password_resets');
 SELECT ok(NOT has_table_privilege('authenticated', 'public.password_resets', 'SELECT') AND NOT has_table_privilege('authenticated', 'public.password_resets', 'INSERT') AND NOT has_table_privilege('authenticated', 'public.password_resets', 'UPDATE') AND NOT has_table_privilege('authenticated', 'public.password_resets', 'DELETE'), 'authenticated cannot access password_resets');
+
+SELECT ok((SELECT relrowsecurity FROM pg_class WHERE oid = 'public.user_auth_identities'::regclass), 'user_auth_identities has RLS enabled');
+SELECT ok(NOT has_table_privilege('anon', 'public.user_auth_identities', 'SELECT') AND NOT has_table_privilege('anon', 'public.user_auth_identities', 'INSERT') AND NOT has_table_privilege('anon', 'public.user_auth_identities', 'UPDATE') AND NOT has_table_privilege('anon', 'public.user_auth_identities', 'DELETE'), 'anon cannot access user_auth_identities');
+SELECT ok(NOT has_table_privilege('authenticated', 'public.user_auth_identities', 'SELECT') AND NOT has_table_privilege('authenticated', 'public.user_auth_identities', 'INSERT') AND NOT has_table_privilege('authenticated', 'public.user_auth_identities', 'UPDATE') AND NOT has_table_privilege('authenticated', 'public.user_auth_identities', 'DELETE'), 'authenticated cannot access user_auth_identities');
 
 SELECT * FROM finish();
 ROLLBACK;
